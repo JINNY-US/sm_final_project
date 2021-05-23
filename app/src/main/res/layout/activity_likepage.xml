@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/cafe3_inf"
+        android:layout_width="311dp"
+        android:layout_height="81dp"
+        android:background="#fff899"
+        android:text="cafe3의 정보"
+        android:textSize="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.66"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageButton
+        android:id="@+id/imageButton5"
+        android:layout_width="70dp"
+        android:layout_height="64dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="100dp"
+        android:background="#ffffff"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@android:drawable/btn_star_big_on" />
+
+    <TextView
+        android:id="@+id/cafename3"
+        android:layout_width="99dp"
+        android:layout_height="37dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginBottom="116dp"
+        android:text="cafe3"
+        android:textSize="22dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/cafe3_img" />
+
+    <ImageView
+        android:id="@+id/cafe3_img"
+        android:layout_width="81dp"
+        android:layout_height="83dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginBottom="92dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@android:drawable/ic_menu_gallery" />
+
+    <TextView
+        android:id="@+id/cafe2_inf"
+        android:layout_width="311dp"
+        android:layout_height="82dp"
+        android:layout_marginBottom="204dp"
+        android:background="#fff899"
+        android:text="cafe2의 정보"
+        android:textSize="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.66"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="#EC6941"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tabLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="630dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/floatingActionButton"
+        app:tabIndicatorColor="#EC6941"
+        app:tabTextColor="#EC6941">
+
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="찜" />
+
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="검색결과" />
+
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="게시판" />
+    </com.google.android.material.tabs.TabLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/floatingActionButton"
+        android:layout_width="61dp"
+        android:layout_height="53dp"
+        android:layout_marginTop="1dp"
+        android:layout_marginEnd="4dp"
+        android:backgroundTint="#ec6941"
+        android:clickable="true"
+        app:layout_constraintBottom_toTopOf="@+id/tabLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/name"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="?android:attr/actionModeWebSearchDrawable" />
+
+    <TextView
+        android:id="@+id/name"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="219dp"
+        android:layout_marginBottom="8dp"
+        android:text="카페"
+        android:textSize="22dp"
+        app:layout_constraintBottom_toBottomOf="@+id/toolbar"
+        app:layout_constraintEnd_toStartOf="@+id/floatingActionButton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/imageButton2"
+        android:layout_width="70dp"
+        android:layout_height="64dp"
+        android:layout_marginTop="136dp"
+        android:layout_marginEnd="24dp"
+        android:background="#ffffff"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@android:drawable/btn_star_big_on" />
+
+    <ImageButton
+        android:id="@+id/imageButton3"
+        android:layout_width="70dp"
+        android:layout_height="64dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="312dp"
+        android:background="#ffffff"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@android:drawable/btn_star_big_on" />
+
+    <ImageView
+        android:id="@+id/cafe2_img"
+        android:layout_width="81dp"
+        android:layout_height="83dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginBottom="304dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@android:drawable/ic_menu_gallery" />
+
+    <TextView
+        android:id="@+id/cafename2"
+        android:layout_width="99dp"
+        android:layout_height="37dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginBottom="328dp"
+        android:text="cafe2"
+        android:textSize="22dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/cafe2_img" />
+
+    <TextView
+        android:id="@+id/cafename1"
+        android:layout_width="99dp"
+        android:layout_height="37dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="148dp"
+        android:text="cafe1"
+        android:textSize="22dp"
+        app:layout_constraintStart_toEndOf="@+id/cafe1_img"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/cafe1_img"
+        android:layout_width="81dp"
+        android:layout_height="81dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="128dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@android:drawable/ic_menu_gallery" />
+
+    <TextView
+        android:id="@+id/cafe1_inf"
+        android:layout_width="311dp"
+        android:layout_height="82dp"
+        android:layout_marginTop="228dp"
+        android:background="#fff899"
+        android:text="cafe1의 정보"
+        android:textSize="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.65"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
