@@ -118,4 +118,5 @@ public class MainActivity extends BasicActivity {
         Intent intent = new Intent(this, c);
         startActivityForResult(intent, 1);
     }
-}*/
+}
+*/

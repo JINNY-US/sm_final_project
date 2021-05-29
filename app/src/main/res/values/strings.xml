@@ -16,6 +16,32 @@
     <string name="first_fragment_label">First Fragment</string>
     <string name="second_fragment_label">Second Fragment</string>
 
+    <!-- -->
+    <string name="userid_re">userid_re</string>
+    <string name="name">음식점</string>
+    <string name="re_button">댓글남기기</string>
+    <string name="userid1_re">userid1_re</string>
+
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="title_activity_seller_main">SellerMainActivity</string>
+
+
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+
+    <!-- Toast 메시지 모음-->
+    <string name="Toast_mode_not_select">모드는 필수적으로 선택해야합니다.</string>
+    <string name="Toast_total_cost_null">전체 금액이 입력되지 않았습니다.</string>
+    <string name="Toast_not_enough_money">천원 이상의 금액을 입력해주세요.</string>
+    <string name="Toast_not_10">각 항목들의 합이 10이 아닙니다. \n 다시 설정해주세요</string>
+
+    <string name="str_guide_to_select_tag"> 추가할 태그를 선택하세요. (복수 가능) </string>
+
+
     <!-- 카메라 관련 -->
     <string name="request_permission">This sample needs camera permission.</string>
     <string name="camera_error">This device doesn\'t support Camera2 API.</string>

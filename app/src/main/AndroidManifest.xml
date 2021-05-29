@@ -18,7 +18,13 @@
         </activity>
         <activity
             android:name=".SellerSettingActivity"
-            android:label="가게 설정 변결"/>
+            android:label="가게 설정 변경">
+            <!--<intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>-->
+        </activity>
         <activity
             android:name=".RequestActivity"
             android:label=" "/>
@@ -39,7 +45,9 @@
             android:theme="@style/MainTheme" />
         <activity
             android:name=".MainActivity"
-            android:theme="@style/MainTheme" />
+            android:theme="@style/NoActionBar" >
+
+        </activity>
         <activity
             android:name=".SplashActivity"
             android:theme="@style/SplashTheme">
