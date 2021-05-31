@@ -21,6 +21,7 @@ import com.example.sm_project.adapter.HomeAdapter;
 import com.example.sm_project.listener.OnPostListener;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
@@ -126,12 +127,7 @@ public class HomeFragment extends Fragment {
         @Override
         public void onClick(View v) {
             switch (v.getId()) {
-                /*
-                case R.id.logoutButton:
-                    FirebaseAuth.getInstance().signOut();
-                    myStartActivity(SignUpActivity.class);
-                    break;
-                */
+
                 case R.id.floatingActionButton:
                     myStartActivity(WritePostActivity.class);
                     break;

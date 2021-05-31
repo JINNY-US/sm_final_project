@@ -10,6 +10,10 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.example.sm_project.fragment.FragmentAdapter;
+import com.example.sm_project.fragment.fragment_review_list;
+import com.example.sm_project.fragment.fragment_search;
+import com.example.sm_project.fragment.fragment_shop_list;
 import com.google.android.material.tabs.TabLayout;
 
 public class MainActivity extends AppCompatActivity {

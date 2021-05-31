@@ -58,7 +58,7 @@ public class SplashActivity extends AppCompatActivity {
                         startActivity(intent);
                     } else {
                         Toast.makeText(SplashActivity.this, "업주로 로그인했습니다.", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(SplashActivity.this, MainActivity.class);
+                        Intent intent = new Intent(SplashActivity.this, SellerSettingActivity.class);
                         startActivity(intent);
                         finish();
                         //firebaseAuth.signOut();
@@ -83,6 +83,9 @@ public class SplashActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-
+        super.onBackPressed();
+        finishAffinity();
+        System.runFinalization();
+        System.exit(0);
     }
 }
