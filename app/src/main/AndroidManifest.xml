@@ -16,14 +16,18 @@
             android:label="메뉴추가">
 
         </activity>
-        <activity
-            android:name=".SellerSettingActivity"
-            android:label="가게 설정 변경">
+        <activity android:name=".SellerMainActivity"
+            android:label="업주 메인">
             <!--<intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>-->
+        </activity>
+        <activity
+            android:name=".SellerSettingActivity"
+            android:label="가게 설정 변경">
+
         </activity>
         <activity
             android:name=".RequestActivity"

@@ -1,5 +1,6 @@
 package com.example.sm_project;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -9,12 +10,20 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.example.sm_project.fragment.FragmentAdapter;
 import com.example.sm_project.fragment.fragment_review_list;
 import com.example.sm_project.fragment.fragment_search;
 import com.example.sm_project.fragment.fragment_shop_list;
 import com.google.android.material.tabs.TabLayout;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "Main_Activity";
@@ -27,6 +36,8 @@ public class MainActivity extends AppCompatActivity {
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private FragmentAdapter adapter;
+    private FirebaseAuth firebaseAuth;
+    DatabaseReference mDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,16 +52,70 @@ public class MainActivity extends AppCompatActivity {
         viewPager=findViewById(R.id.view_pager);
         adapter=new FragmentAdapter(getSupportFragmentManager(),1);
 
-
         setSupportActionBar(toolbar);
 
         ivMenu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getApplication(), MypageActivity.class));
+                Intent intent = new Intent(MainActivity.this, MypageActivity.class);
+                startActivity(intent);
                 finish();
             }
         });
+
+
+        /*class main implements Runnable {
+
+            @Override
+            public void run() {
+                FirebaseUser user = firebaseAuth.getCurrentUser(); //로그인한 유저의 정보 가져오기
+                String uid = user != null ? user.getUid() : null;
+
+                setSupportActionBar(toolbar);
+
+                ivMenu.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(MainActivity.this, MypageActivity.class);
+                        startActivity(intent);
+                        finish();
+                    }
+                });
+
+                mDatabase = FirebaseDatabase.getInstance().getReference();
+                mDatabase.child("Users").child(uid).child("userType").addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        Boolean userType = Boolean.parseBoolean(snapshot.getValue(String.class));
+                        ivMenu.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                if (userType) {
+                                    Toast.makeText(MainActivity.this, "마이페이지로 이동합니다.", Toast.LENGTH_SHORT).show();
+                                    Intent intent = new Intent(MainActivity.this, MypageActivity.class);
+                                    startActivity(intent);
+                                } else {
+                                    Toast.makeText(MainActivity.this, "업주 설정 변경 페이지로 이동합니다.", Toast.LENGTH_SHORT).show();
+                                    Intent intent = new Intent(MainActivity.this, SellerMypageActivity.class);
+                                    startActivity(intent);
+                                    finish();
+                                    //firebaseAuth.signOut();
+                                }
+                            }
+                        });
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                    }
+                });
+
+            }
+        }*/
+
+
+
 
 //매니저에 프레그먼트 추가
         adapter.addFragment(new fragment_shop_list());
