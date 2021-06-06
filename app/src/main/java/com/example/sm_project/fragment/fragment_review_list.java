@@ -6,14 +6,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -63,8 +59,8 @@ public class fragment_review_list extends Fragment {
         homeAdapter = new HomeAdapter(getActivity(), postList);
         homeAdapter.setOnPostListener(onPostListener);
 
-        final RecyclerView recyclerView = view.findViewById(R.id.recyclerView);
-        view.findViewById(R.id.floatingActionButton).setOnClickListener(onClickListener);
+        final RecyclerView recyclerView = view.findViewById(R.id.RecyclerView_review);
+        view.findViewById(R.id.ActionButton_review).setOnClickListener(onClickListener);
 
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));

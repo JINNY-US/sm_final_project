@@ -7,6 +7,7 @@ import androidx.appcompat.widget.Toolbar;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -25,11 +26,15 @@ import com.google.firebase.database.ValueEventListener;
 
 public class MypageActivity extends AppCompatActivity {
 
-    Button go_to_setting, go_to_likepage, go_to_cost_setting, go_to_logout, go_to_seller_setting;
+    Button go_to_setting, go_to_cost_setting, go_to_logout, go_to_seller_setting, go_to_product_delete;
     FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-    //private FirebaseAuth firebaseAuth;
 
-    DatabaseReference mDatabase;
+   // public static boolean userType;
+
+    String userType;
+    boolean userType_bool;
+
+    SharedPreferences.Editor editor;
 
 
     @Override
@@ -39,44 +44,31 @@ public class MypageActivity extends AppCompatActivity {
         Toolbar tb = findViewById(R.id.mypage_toolbar);
         setSupportActionBar(tb);
 
-
-
         go_to_setting = findViewById(R.id.go_to_setting);
-        go_to_likepage = findViewById(R.id.go_to_likepage);
         go_to_cost_setting = findViewById(R.id.go_to_cost_setting);
         go_to_logout = findViewById(R.id.go_to_logout);
         go_to_seller_setting = findViewById(R.id.go_to_seller_setting);
+        go_to_product_delete = findViewById(R.id.go_to_product_delete);
 
-        /*class mypage implements Runnable {
-            @Override
-            public void run() {
-                FirebaseUser user = firebaseAuth.getCurrentUser(); //로그인한 유저의 정보 가져오기
-                String uid = user != null ? user.getUid() : null;
+        SharedPreferences sharedPreferences= getSharedPreferences("sFile", MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        userType = sharedPreferences.getString("userType", "");
+        userType_bool = Boolean.parseBoolean(userType);
 
-                mDatabase = FirebaseDatabase.getInstance().getReference();
-                mDatabase.child("Users").child(uid).child("userType").addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        Boolean userType = Boolean.parseBoolean(snapshot.getValue(String.class));
-                        if (userType) {
-                            *//*Toast.makeText(MypageActivity.this, "일반인으로 로그인했습니다.", Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(MypageActivity.this, MainActivity.class);
-                            startActivity(intent);*//*
-                            finish();
-                        } else {
-                            go_to_seller_setting.setVisibility(View.VISIBLE);
+        if (userType_bool) {
+            go_to_cost_setting.setVisibility(View.VISIBLE);
+            go_to_seller_setting.setVisibility(View.GONE);
+            go_to_product_delete.setVisibility(View.GONE);
+        }
+        else{
+            go_to_cost_setting.setVisibility(View.GONE);
+            go_to_seller_setting.setVisibility(View.VISIBLE);
+            go_to_product_delete.setVisibility(View.VISIBLE);
+        }
 
-                        }
-                    }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-                    }
-                });
 
-            }
-        }*/
-
+        //사용자 설정 변경 (이름, 비밀번호 등)
         go_to_setting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -85,7 +77,7 @@ public class MypageActivity extends AppCompatActivity {
             }
         });
 
-
+        //비용 변경 (일반 사용자)
         go_to_cost_setting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -94,14 +86,8 @@ public class MypageActivity extends AppCompatActivity {
             }
         });
 
-        go_to_likepage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(getApplication(), LikepageActivity.class));
-                finish();
-            }
-        });
 
+        //판매자 설정 변경 (가게 이름, 주소 등)
         go_to_seller_setting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -110,8 +96,17 @@ public class MypageActivity extends AppCompatActivity {
             }
         });
 
+        go_to_product_delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getApplicationContext(), "미완성- 추가 예정", Toast.LENGTH_SHORT).show();
+            }
+        });
+
     }
 
+
+    //로그아웃 함수
     public void signOut(View view) {
         AlertDialog.Builder alt_bld = new AlertDialog.Builder(view.getContext());
         alt_bld.setMessage("로그아웃 하시겠습니까?").setCancelable(false)
@@ -120,6 +115,8 @@ public class MypageActivity extends AppCompatActivity {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 firebaseAuth.signOut();
+                                editor.clear();
+                                editor.commit();
                                 Intent intent = new Intent(MypageActivity.this, LoginActivity.class);
                                 startActivity(intent);
                                 finish();
@@ -148,10 +145,21 @@ public class MypageActivity extends AppCompatActivity {
 
     }
 
+    //뒤로가기 시 메인페이지로 이동
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        startActivity(new Intent(getApplication(), MainActivity.class));
+
+        Intent intent;
+        if (userType_bool) {
+            intent = new Intent(getApplication(), MainActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        }
+        else{
+            intent = new Intent(getApplication(), SellerMainActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        }
+        startActivity(intent);
         finish();
     }
 

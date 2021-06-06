@@ -17,19 +17,16 @@ import com.example.sm_project.PostInfo;
 import com.example.sm_project.R;
 import com.example.sm_project.UserInfo;
 import com.example.sm_project.activity.WritePostActivity;
-import com.example.sm_project.adapter.HomeAdapter;
 import com.example.sm_project.adapter.UserListAdapter;
 import com.example.sm_project.listener.OnPostListener;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
-import java.util.Date;
 
 public class UserListFragment extends Fragment {
     private static final String TAG = "HomeFragment";
@@ -58,7 +55,7 @@ public class UserListFragment extends Fragment {
         userList = new ArrayList<>();
         userListAdapter = new UserListAdapter(getActivity(), userList);
 
-        final RecyclerView recyclerView = view.findViewById(R.id.recyclerView);
+        final RecyclerView recyclerView = view.findViewById(R.id.RecyclerView_review);
 
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -130,7 +127,7 @@ public class UserListFragment extends Fragment {
                     myStartActivity(SignUpActivity.class);
                     break;
                 */
-                case R.id.floatingActionButton:
+                case R.id.ActionButton_review:
                     myStartActivity(WritePostActivity.class);
                     break;
             }

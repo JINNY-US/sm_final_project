@@ -1,5 +1,7 @@
-package com.example.sm_project.fragment;
+package com.example.sm_project.adapter;
 
+
+import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -31,5 +33,9 @@ public class FragmentAdapter extends FragmentPagerAdapter {
     @Override
     public int getCount() {
         return fragmentList.size();
+    }
+
+    public Parcelable saveState() {
+        return saveState();
     }
 }

@@ -2,6 +2,7 @@ package com.example.sm_project;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.widget.Toast;
@@ -25,6 +26,11 @@ public class SplashActivity extends AppCompatActivity {
 
     DatabaseReference mDatabase;
 
+    private static boolean userType;
+
+    //userType 변수 저장
+    SharedPreferences.Editor editor;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,6 +40,9 @@ public class SplashActivity extends AppCompatActivity {
 
         firebaseAuth = FirebaseAuth.getInstance();
 
+        SharedPreferences sharedPreferences = getSharedPreferences("sFile", MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+
         if (firebaseAuth.getCurrentUser() != null) {
             handler.postDelayed(new mainSplash(),2000);
         }else{
@@ -42,27 +51,34 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private  class mainSplash implements Runnable {
+
         @Override
         public void run() {
             FirebaseUser user = firebaseAuth.getCurrentUser(); //로그인한 유저의 정보 가져오기
             String uid = user != null ? user.getUid() : null;
 
+            SharedPreferences sharedPreferences = getSharedPreferences("sFile", MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+
             mDatabase = FirebaseDatabase.getInstance().getReference();
             mDatabase.child("Users").child(uid).child("userType").addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    Boolean userType = Boolean.parseBoolean(snapshot.getValue(String.class));
+                    userType = Boolean.parseBoolean(snapshot.getValue(String.class));
                     if (userType) {
                         Toast.makeText(SplashActivity.this, "일반인으로 로그인했습니다.", Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(SplashActivity.this, MainActivity.class);
                         startActivity(intent);
                     } else {
                         Toast.makeText(SplashActivity.this, "업주로 로그인했습니다.", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(SplashActivity.this, MainActivity.class);
+                        Intent intent = new Intent(SplashActivity.this, SellerMainActivity.class);
                         startActivity(intent);
-                        finish();
                         //firebaseAuth.signOut();
                     }
+                    editor.putString("userType", String.valueOf(userType));
+                    editor.commit();
+                    String check = sharedPreferences.getString("userType", "");
+                    finish();
                 }
 
                 @Override
@@ -73,14 +89,15 @@ public class SplashActivity extends AppCompatActivity {
         }
     }
 
+
     private class splashhandler implements Runnable {
+
         @Override
         public void run() {
             startActivity(new Intent(getApplication(), LoginActivity.class));
             finish();
         }
     }
-
     @Override
     public void onBackPressed() {
         super.onBackPressed();
@@ -88,4 +105,5 @@ public class SplashActivity extends AppCompatActivity {
         System.runFinalization();
         System.exit(0);
     }
+
 }

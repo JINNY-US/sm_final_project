@@ -21,7 +21,6 @@ import com.example.sm_project.adapter.HomeAdapter;
 import com.example.sm_project.listener.OnPostListener;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
@@ -59,8 +58,8 @@ public class HomeFragment extends Fragment {
         homeAdapter = new HomeAdapter(getActivity(), postList);
         homeAdapter.setOnPostListener(onPostListener);
 
-        final RecyclerView recyclerView = view.findViewById(R.id.recyclerView);
-        view.findViewById(R.id.floatingActionButton).setOnClickListener(onClickListener);
+        final RecyclerView recyclerView = view.findViewById(R.id.RecyclerView_review);
+        view.findViewById(R.id.ActionButton_review).setOnClickListener(onClickListener);
 
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -128,7 +127,7 @@ public class HomeFragment extends Fragment {
         public void onClick(View v) {
             switch (v.getId()) {
 
-                case R.id.floatingActionButton:
+                case R.id.ActionButton_review:
                     myStartActivity(WritePostActivity.class);
                     break;
             }

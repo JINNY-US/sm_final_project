@@ -90,25 +90,25 @@
         app:layout_constraintTop_toBottomOf="@+id/iv_preview" />
 
     <Button
-        android:id="@+id/bt_cancel"
+        android:id="@+id/bt_upload"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="20dp"
-        android:text="취소"
-        app:layout_constraintEnd_toStartOf="@+id/bt_upload"
+        android:text="등록"
+        app:layout_constraintEnd_toStartOf="@+id/bt_cancel"
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView13" />
 
     <Button
-        android:id="@+id/bt_upload"
+        android:id="@+id/bt_cancel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="15dp"
-        android:text="등록"
-        app:layout_constraintBottom_toBottomOf="@+id/bt_cancel"
+        android:text="취소"
+        app:layout_constraintBottom_toBottomOf="@+id/bt_upload"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/bt_cancel" />
+        app:layout_constraintStart_toEndOf="@+id/bt_upload" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

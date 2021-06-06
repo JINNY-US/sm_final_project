@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -41,6 +42,8 @@ public class LoginActivity extends AppCompatActivity {
 
     DatabaseReference mDatabase;
 
+    SharedPreferences.Editor editor;
+
     //onActivityResultCode 를 위한것
     private static final int RC_SIGN_IN = 9001;
 
@@ -58,6 +61,9 @@ public class LoginActivity extends AppCompatActivity {
         mEmailText = findViewById(R.id.login_email);
         mPasswordText = findViewById(R.id.login_passward);
         mFindpwText = findViewById(R.id.find_pw);
+
+        SharedPreferences sharedPreferences = getSharedPreferences("sFile", MODE_PRIVATE);
+        editor = sharedPreferences.edit();
 
         //가입 버튼이 눌리면
         mJoinBtn.setOnClickListener(new View.OnClickListener() {
@@ -122,7 +128,7 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-    private void readUser( ) {
+    private void readUser() {
         FirebaseUser user = firebaseAuth.getCurrentUser(); //로그인한 유저의 정보 가져오기
         String uid = user != null ? user.getUid() : null;
 
@@ -130,23 +136,26 @@ public class LoginActivity extends AppCompatActivity {
         mDatabase.child("Users").child(uid).child("userType").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Intent intent;
                 Boolean userType = Boolean.parseBoolean(snapshot.getValue(String.class));
-                    if (userType) {
-                        Toast.makeText(LoginActivity.this, "일반인으로 로그인했습니다.", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                        startActivity(intent);
-                        finish();
-                    } else {
-                        Toast.makeText(LoginActivity.this, "업주로 로그인했습니다.", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                        startActivity(intent);
-                        finish();
-                        //firebaseAuth.signOut();
-                    }
+                if (userType) {
+                    Toast.makeText(LoginActivity.this, "일반인으로 로그인했습니다.", Toast.LENGTH_SHORT).show();
+                    intent = new Intent(LoginActivity.this, MainActivity.class);
+                } else {
+                    Toast.makeText(LoginActivity.this, "업주로 로그인했습니다.", Toast.LENGTH_SHORT).show();
+                    intent = new Intent(LoginActivity.this, SellerMainActivity.class);
+                    //firebaseAuth.signOut();
+                }
+                editor.putString("userType", snapshot.getValue(String.class));
+                editor.commit();
+                startActivity(intent);
+                finish();
+
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError error) { }
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
         });
 
     }
@@ -158,9 +167,9 @@ public class LoginActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             FirebaseUser user = firebaseAuth.getCurrentUser();
-                            if(user.isEmailVerified()) {
-                                    Toast.makeText(LoginActivity.this, "로그인에 성공했습니다.", Toast.LENGTH_SHORT).show();
-                                    readUser();
+                            if (user.isEmailVerified()) {
+                                Toast.makeText(LoginActivity.this, "로그인에 성공했습니다.", Toast.LENGTH_SHORT).show();
+                                readUser();
                             } else {
                                 Toast.makeText(LoginActivity.this, "이메일 인증이 필요합니다.", Toast.LENGTH_SHORT).show();
                             }
@@ -174,14 +183,14 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 
-        @Override
-        protected void onStart () {
-            super.onStart();
-        }
+    @Override
+    protected void onStart() {
+        super.onStart();
+    }
 
-        @Override
-        protected void onStop () {
-            super.onStop();
-        }
+    @Override
+    protected void onStop() {
+        super.onStop();
+    }
 
 }

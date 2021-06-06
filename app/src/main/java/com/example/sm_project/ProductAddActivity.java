@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -57,6 +58,9 @@ public class ProductAddActivity extends AppCompatActivity {
 
     private Uri filePath;
 
+    private String userType;
+    private boolean userType_bool;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,6 +78,10 @@ public class ProductAddActivity extends AppCompatActivity {
         uid = user != null ? user.getUid() : null;
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
+        SharedPreferences sharedPreferences = getSharedPreferences("sFile", MODE_PRIVATE);
+        userType = sharedPreferences.getString("userType", "");
+        userType_bool = Boolean.getBoolean(userType);
+
         //버튼 클릭 이벤트
         btChoose.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -89,19 +97,28 @@ public class ProductAddActivity extends AppCompatActivity {
         btCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(getApplication(), MainActivity.class));
-                finish();
+
+                if (userType_bool) {
+                    startActivity(new Intent(getApplication(), MainActivity.class));
+                    finish();
+                }
+                else{
+                    startActivity(new Intent(getApplication(), SellerMainActivity.class));
+                    finish();
+                }
+
             }
+
         });
 
         btUpload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(!txt_product_name.getText().toString().equals("") && !txt_product_price.getText().toString().equals("")) {
+                if (!txt_product_name.getText().toString().equals("") && !txt_product_price.getText().toString().equals("")) {
                     name = txt_product_name.getText().toString().trim();
                     price = txt_product_price.getText().toString().trim();
 
-                    if(filePath != null) {
+                    if (filePath != null) {
                         productUpdates = new HashMap<>();
 
                         //업로드할 파일이 있으면 이미지업로드
@@ -128,12 +145,13 @@ public class ProductAddActivity extends AppCompatActivity {
 
     }
 
+
     //결과 처리
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         //request코드가 0이고 OK를 선택했고 data에 뭔가가 들어 있다면
-        if(requestCode == 0 && resultCode == RESULT_OK){
+        if (requestCode == 0 && resultCode == RESULT_OK) {
             filePath = data.getData();
             Log.d(TAG, "uri:" + String.valueOf(filePath));
             try {
@@ -148,42 +166,42 @@ public class ProductAddActivity extends AppCompatActivity {
 
     //upload the file
     private void uploadFile() {
-            //storage
-            FirebaseStorage storage = FirebaseStorage.getInstance();
+        //storage
+        FirebaseStorage storage = FirebaseStorage.getInstance();
 
-            //Unique한 파일명을 만들자.
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMHH_HHmm");
-            Date now = new Date();
-            filename = uid + "_" + formatter.format(now) + ".png";
-            //storage 주소와 폴더 파일명을 지정해 준다.
-            StorageReference storageRef = storage.getReferenceFromUrl("gs://sm-project-400f7.appspot.com").child("Products/" + filename);
-            //올라가거라...
-            storageRef.putFile(filePath)
-                    //성공시
-                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                            Toast.makeText(getApplicationContext(), "이미지 업로드 완료!", Toast.LENGTH_SHORT).show();
-                        }
-                    })
-                    //실패시
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(getApplicationContext(), "이미지 업로드 실패!", Toast.LENGTH_SHORT).show();
-                        }
-                    })
-                    //진행중
-                    .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                            @SuppressWarnings("VisibleForTests")
-                            double progress = (100 * taskSnapshot.getBytesTransferred()) /  taskSnapshot.getTotalByteCount();
-                        }
-                    });
+        //Unique한 파일명을 만들자.
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMHH_HHmm");
+        Date now = new Date();
+        filename = uid + "_" + formatter.format(now) + ".png";
+        //storage 주소와 폴더 파일명을 지정해 준다.
+        StorageReference storageRef = storage.getReferenceFromUrl("gs://sm-project-400f7.appspot.com").child("Products/" + filename);
+        //올라가거라...
+        storageRef.putFile(filePath)
+                //성공시
+                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        Toast.makeText(getApplicationContext(), "이미지 업로드 완료!", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                //실패시
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(getApplicationContext(), "이미지 업로드 실패!", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                //진행중
+                .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                        @SuppressWarnings("VisibleForTests")
+                        double progress = (100 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
+                    }
+                });
     }
 
-    public void ImageDialog (View view) {
+    public void ImageDialog(View view) {
         AlertDialog.Builder alt_bld = new AlertDialog.Builder(view.getContext());
         alt_bld.setMessage("이미지 없이 상품을 등록합니다.").setCancelable(false)
                 .setPositiveButton("네",
@@ -233,9 +251,10 @@ public class ProductAddActivity extends AppCompatActivity {
         private String price;
         private String image;
 
-        public ProductInfo(){ }
+        public ProductInfo() {
+        }
 
-        public ProductInfo(String name ,String price, String image) {
+        public ProductInfo(String name, String price, String image) {
             this.name = name;
             this.price = price;
             this.image = image;
@@ -250,4 +269,39 @@ public class ProductAddActivity extends AppCompatActivity {
             return result;
         }
     }
+
+    //뒤로가기 시 메인페이지로 이동
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+
+        if (userType_bool) {
+            startActivity(new Intent(getApplication(), MainActivity.class));
+            finish();
+        }
+        else{
+            startActivity(new Intent(getApplication(), SellerMainActivity.class));
+            finish();
+        }
+    }
+
+//    //뒤로가기 시 메인페이지로 이동
+//    @Override
+//    public void onBackPressed() {
+//        super.onBackPressed();
+//
+//        Intent intent;
+//
+//        if (userType_bool) {
+//            intent = new Intent(getApplication(), MainActivity.class);
+//            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//        }
+//        else{
+//            intent = new Intent(getApplication(), SellerMainActivity.class);
+//            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//        }
+//        startActivity(intent);
+//        finish();
+//
+//    }
 }

@@ -26,12 +26,45 @@
                 app:srcCompat="@drawable/icon_trp" />
 
             <TextView
+                android:id="@+id/textView15"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:gravity="center"
+                android:text="1. 방문할 지역을 선택해주세요!"
+                android:textColor="@color/black"
+                android:textSize="24sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <Spinner
+                    android:id="@+id/spinner_set_city"
+                    android:layout_width="match_parent"
+                    android:layout_height="35dp"
+                    android:layout_marginLeft="25dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_weight="1" />
+
+                <Spinner
+                    android:id="@+id/spinner_set_town"
+                    android:layout_width="match_parent"
+                    android:layout_height="35dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="25dp"
+                    android:layout_weight="1" />
+            </LinearLayout>
+
+            <TextView
                 android:id="@+id/textView2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
+                android:layout_marginTop="25dp"
                 android:gravity="center"
-                android:text="1. 전체 사용 예정 금액을 \n 입력해주세요!"
+                android:text="2. 전체 사용 예정 금액을 \n 입력해주세요!"
                 android:textColor="@color/black"
                 android:textSize="24sp" />
 
@@ -74,7 +107,7 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="20dp"
                 android:gravity="center"
-                android:text="2. 원하는 설정을 선택하세요!\n설정에 맞춰 가게를 추천해드립니다!"
+                android:text="3. 원하는 설정을 선택하세요!\n설정에 맞춰 가게를 추천해드립니다!"
                 android:textColor="@color/black"
                 android:textSize="20sp" />
 

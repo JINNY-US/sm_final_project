@@ -8,32 +8,16 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.os.Bundle;
-import android.view.View;
-import android.view.WindowManager;
 import android.widget.Button;
 
-import com.example.sm_project.MypageActivity;
 import com.example.sm_project.PostInfo;
-import com.example.sm_project.ProductAddActivity;
 import com.example.sm_project.R;
-import com.example.sm_project.SellerIntroFragment;
-import com.example.sm_project.SellerSettingActivity;
-import com.example.sm_project.activity.WritePostActivity;
 import com.example.sm_project.adapter.HomeAdapter;
-import com.example.sm_project.listener.OnPostListener;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -77,7 +61,7 @@ public class fragment_shop_list extends Fragment {
         homeAdapter = new HomeAdapter(getActivity(), postList);
         //homeAdapter.setOnPostListener(onPostListener);
 
-        final RecyclerView recyclerView = view.findViewById(R.id.recyclerView);
+        final RecyclerView recyclerView = view.findViewById(R.id.RecyclerView_review);
         //view.findViewById(R.id.floatingActionButton).setOnClickListener(onClickListener);
 
         recyclerView.setHasFixedSize(true);
