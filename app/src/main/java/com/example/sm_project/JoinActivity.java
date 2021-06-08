@@ -151,6 +151,7 @@ public class JoinActivity extends AppCompatActivity {
                     String uid = user.getUid();
                     String name = Name;
                     String userType = String.format("%b", checkedUser);
+                    String init_set = "false"; // 셀러 초기 확인
 
                     //해쉬맵 테이블을 파이어베이스 데이터베이스에 저장
                     HashMap<Object, String> userInfo = new HashMap<>();
@@ -160,6 +161,7 @@ public class JoinActivity extends AppCompatActivity {
                     userInfo.put("password", password);
                     userInfo.put("name", name);
                     userInfo.put("userType", userType);
+                    userInfo.put("init_set", init_set);
 
                     FirebaseDatabase database = FirebaseDatabase.getInstance();
                     DatabaseReference userRef = database.getReference("Users");
@@ -168,6 +170,7 @@ public class JoinActivity extends AppCompatActivity {
                     Boolean type = Boolean.parseBoolean(userType);
                     if(!type) {
                         HashMap<Object, String> storeInfo = new HashMap<>();
+                        HashMap<Object, String> userInfo_ = new HashMap<>();
 
                         storeInfo.put("uid", uid);
 

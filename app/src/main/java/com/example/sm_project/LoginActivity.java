@@ -78,7 +78,6 @@ public class LoginActivity extends AppCompatActivity {
 
         //로그인 버튼이 눌리면
         mLoginBtn.setOnClickListener(new View.OnClickListener() {
-
             @Override
             public void onClick(View v) {
                 String id, pwd;
@@ -86,7 +85,6 @@ public class LoginActivity extends AppCompatActivity {
                 if (!mEmailText.getText().toString().equals("") && !mPasswordText.getText().toString().equals("")) {
                     id = mEmailText.getText().toString().trim();
                     pwd = mPasswordText.getText().toString().trim();
-
                     loginUser(id, pwd);
                 } else {
                     Toast.makeText(LoginActivity.this, "이메일과 비밀번호를 입력하세요.", Toast.LENGTH_LONG).show();
@@ -103,29 +101,6 @@ public class LoginActivity extends AppCompatActivity {
 
             }
         });
-
-        /*firebaseAuthListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser(); //로그인한 유저의 정보 가져오기
-                String uid = user != null ? user.getUid() : null; //로그인한 유저의 고유 uid 가져오기
-
-                mDatabase = FirebaseDatabase.getInstance().getReference(); //파이어베이스 realtime database에서 정보 가져오기
-                DatabaseReference userType = mDatabase.child(uid).child("userType");
-                if (user != null) {
-                            //사용자에 따른 엑티비티 전환
-                            if (snapshot.getValue() == "false") {
-                                finish();
-                                Toast.makeText(LoginActivity.this, "업주로 로그인했습니다.", Toast.LENGTH_SHORT).show();
-                            } else {
-                                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                                startActivity(intent);
-                                finish();
-                            }
-                        }
-            }
-        };*/
-
     }
 
     private void readUser() {
@@ -141,16 +116,16 @@ public class LoginActivity extends AppCompatActivity {
                 if (userType) {
                     Toast.makeText(LoginActivity.this, "일반인으로 로그인했습니다.", Toast.LENGTH_SHORT).show();
                     intent = new Intent(LoginActivity.this, MainActivity.class);
+                    startActivity(intent);
+                    finish();
                 } else {
                     Toast.makeText(LoginActivity.this, "업주로 로그인했습니다.", Toast.LENGTH_SHORT).show();
                     intent = new Intent(LoginActivity.this, SellerMainActivity.class);
-                    //firebaseAuth.signOut();
+                    startActivity(intent);
+                    finish();
                 }
                 editor.putString("userType", snapshot.getValue(String.class));
                 editor.commit();
-                startActivity(intent);
-                finish();
-
             }
 
             @Override

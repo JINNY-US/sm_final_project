@@ -49,6 +49,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:layout_marginBottom="30dp"
                     android:orientation="vertical">
 
                     <include
@@ -56,28 +57,25 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
 
+                    <!--<ImageView
+                        android:id="@+id/iv_preview_review"
+                        android:layout_width="180dp"
+                        android:layout_height="190dp"
+                        android:layout_gravity="center_horizontal"
+                        app:layout_constraintStart_toStartOf="@+id/bt_choose"
+                        app:layout_constraintTop_toBottomOf="@+id/bt_choose"
+                        app:srcCompat="@drawable/ic_baseline_image_search_24" />
+
+                    <Button
+                        android:id="@+id/image"
+                        android:layout_width="180dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_weight="1"
+                        android:text="이미지 추가" />-->
+
                 </LinearLayout>
 
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal">
-
-                <Button
-                    android:id="@+id/image"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="이미지" />
-
-                <Button
-                    android:id="@+id/video"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="비디오" />
             </LinearLayout>
 
             <Button

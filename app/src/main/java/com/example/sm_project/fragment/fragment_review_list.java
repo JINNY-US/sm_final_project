@@ -1,6 +1,8 @@
 package com.example.sm_project.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,36 +10,44 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import android.content.Context;
-import android.content.Intent;
 
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import android.widget.ListView;
+import android.widget.Toast;
 
-import android.util.Log;
-import com.example.sm_project.PostInfo;
 import com.example.sm_project.R;
 import com.example.sm_project.activity.WritePostActivity;
 import com.example.sm_project.adapter.HomeAdapter;
-import com.example.sm_project.listener.OnPostListener;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.CollectionReference;
+import com.example.sm_project.adapter.ListViewAdapter;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.List;
 
 public class fragment_review_list extends Fragment {
 
     private static final String TAG = "HomeFragment";
     private FirebaseFirestore firebaseFirestore;
     private HomeAdapter homeAdapter;
-    private ArrayList<PostInfo> postList;
+    List<DataSnapshot> userList = new ArrayList<DataSnapshot>();
+    List<DataSnapshot> userContentList = new ArrayList<DataSnapshot>();
+    List<DataSnapshot> contentList = new ArrayList<DataSnapshot>();
     private boolean updating;
     private boolean topScrolled;
+
+    List<String> userKey = new ArrayList<String>();
+    List<String> contentKey = new ArrayList<String>();
+
+    ListView listview;
+    ListViewAdapter mAdapter;
+
+    DatabaseReference mDatabase;
+
+    private Context context;
 
     public fragment_review_list() {
         // Required empty public constructor
@@ -52,74 +62,96 @@ public class fragment_review_list extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fragment_review_list, container, false);
+        ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_review_list, container, false);
 
-        firebaseFirestore = FirebaseFirestore.getInstance();
-        postList = new ArrayList<>();
-        homeAdapter = new HomeAdapter(getActivity(), postList);
-        homeAdapter.setOnPostListener(onPostListener);
+        Handler mHandler = new Handler();
 
-        final RecyclerView recyclerView = view.findViewById(R.id.RecyclerView_review);
-        view.findViewById(R.id.ActionButton_review).setOnClickListener(onClickListener);
+        //리스트뷰 참조
+        listview = rootView.findViewById(R.id.ListView_review);
+        //Adapter 생성
+        mAdapter = new ListViewAdapter();
+        //리스트뷰 Adapter 달기
+        listview.setAdapter(mAdapter);
 
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recyclerView.setAdapter(homeAdapter);
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        context = container.getContext();
+        mHandler = new Handler();
+
+        rootView.findViewById(R.id.ActionButton_review).setOnClickListener(onClickListener);
+
+        checkAnswerUser(new fragment_review_list.Callback(){
             @Override
-            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
+            public void success(boolean bool) {
+                if(bool) {
+                    if (userList.size() != 0) {
+                        mAdapter.clear();
+                        for (int i = 0; i<userList.size(); i++) {
+                            int num = i;
+                            checkAnswerContent(new fragment_review_list.Callback() {
+                                @Override
+                                public void success(boolean bool) {
+                                    if(bool) {
+                                        int n = num;
+                                        if (contentKey.get(n) != null) {
+                                            mAdapter.addItem(context.getDrawable(R.drawable.ic_baseline_image_24),
+                                                    userKey.get(n), contentKey.get(n), "");
+                                            mAdapter.notifyDataSetChanged();
+                                        }
+                                    } else {
+                                        Toast.makeText(getContext(), "실패", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
 
-                RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
-                int firstVisibleItemPosition = ((LinearLayoutManager)layoutManager).findFirstVisibleItemPosition();
+                            }, userKey.get(i));
+                        }}
 
-                if(newState == 1 && firstVisibleItemPosition == 0){
-                    topScrolled = true;
-                }
-                if(newState == 0 && topScrolled){
-                    postsUpdate(true);
-                    topScrolled = false;
-                }
-            }
-
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy){
-                super.onScrolled(recyclerView, dx, dy);
-
-                RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
-                int visibleItemCount = layoutManager.getChildCount();
-                int totalItemCount = layoutManager.getItemCount();
-                int firstVisibleItemPosition = ((LinearLayoutManager)layoutManager).findFirstVisibleItemPosition();
-                int lastVisibleItemPosition = ((LinearLayoutManager)layoutManager).findLastVisibleItemPosition();
-
-                if(totalItemCount - 3 <= lastVisibleItemPosition && !updating){
-                    postsUpdate(false);
-                }
-
-                if(0 < firstVisibleItemPosition){
-                    topScrolled = false;
                 }
             }
         });
 
-        postsUpdate(false);
 
-        return view;
+        return rootView;
     }
 
-    public void onAttach(Context context) {
-        super.onAttach(context);
+    public interface Callback{
+        void success(boolean bool);
     }
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
+    private void checkAnswerUser(@NonNull fragment_review_list.Callback finishedCallback) {
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+        mDatabase.child("Board").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                userList.clear();
+                for (DataSnapshot data : snapshot.getChildren()) {
+                    userList.add(data);
+                    userKey.add(data.getKey());
+                }
+                finishedCallback.success(true);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
     }
 
-    @Override
-    public void onPause(){
-        super.onPause();
-        homeAdapter.playerStop();
+    private void checkAnswerContent(@NonNull fragment_review_list.Callback finishedCallback, String user) {
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+        mDatabase.child("Board").child(user).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                userContentList.clear();
+                for (DataSnapshot data : snapshot.getChildren()) {
+                    userContentList.add(data);
+                    contentKey.add(data.getKey());
+                }
+                finishedCallback.success(true);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
     }
 
     View.OnClickListener onClickListener = new View.OnClickListener() {
@@ -129,175 +161,7 @@ public class fragment_review_list extends Fragment {
         }
     };
 
-    OnPostListener onPostListener = new OnPostListener() {
-        @Override
-        public void onDelete(PostInfo postInfo) {
-            postList.remove(postInfo);
-            homeAdapter.notifyDataSetChanged();
 
-            Log.e("로그: ","삭제 성공");
-        }
-
-        @Override
-        public void onModify() {
-            Log.e("로그: ","수정 성공");
-        }
-    };
-
-    private void postsUpdate(final boolean clear) {
-        updating = true;
-        Date date = postList.size() == 0 || clear ? new Date() : postList.get(postList.size() - 1).getCreatedAt();
-        CollectionReference collectionReference = firebaseFirestore.collection("posts");
-        collectionReference.orderBy("createdAt", Query.Direction.DESCENDING).whereLessThan("createdAt", date).limit(10).get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            if(clear){
-                                postList.clear();
-                            }
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                Log.d(TAG, document.getId() + " => " + document.getData());
-                                postList.add(new PostInfo(
-                                        document.getData().get("title").toString(),
-                                        (ArrayList<String>) document.getData().get("contents"),
-                                        (ArrayList<String>) document.getData().get("formats"),
-                                        document.getData().get("publisher").toString(),
-                                        new Date(document.getDate("createdAt").getTime()),
-                                        document.getId()));
-                            }
-                            homeAdapter.notifyDataSetChanged();
-                        } else {
-                            Log.d(TAG, "Error getting documents: ", task.getException());
-                        }
-                        updating = false;
-                    }
-                });
-    }
-
-    private void myStartActivity(Class c) {
-        Intent intent = new Intent(getActivity(), c);
-        startActivityForResult(intent, 0);
-    }
-   /* @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v=inflater.inflate(R.layout.fragment_review_list,container,false);
-
-        return v;
-    }*/
-}
-
-/*
-package com.example.sm_project.fragment;
-
-        import android.content.Context;
-        import android.content.Intent;
-        import android.os.Bundle;
-
-        import androidx.annotation.NonNull;
-        import androidx.fragment.app.Fragment;
-        import androidx.recyclerview.widget.LinearLayoutManager;
-        import androidx.recyclerview.widget.RecyclerView;
-
-        import android.util.Log;
-        import android.view.LayoutInflater;
-        import android.view.View;
-        import android.view.ViewGroup;
-
-        import com.example.sm_project.PostInfo;
-        import com.example.sm_project.R;
-        import com.example.sm_project.activity.WritePostActivity;
-        import com.example.sm_project.adapter.HomeAdapter;
-        import com.example.sm_project.listener.OnPostListener;
-        import com.google.android.gms.tasks.OnCompleteListener;
-        import com.google.android.gms.tasks.Task;
-        import com.google.firebase.firestore.CollectionReference;
-        import com.google.firebase.firestore.FirebaseFirestore;
-        import com.google.firebase.firestore.Query;
-        import com.google.firebase.firestore.QueryDocumentSnapshot;
-        import com.google.firebase.firestore.QuerySnapshot;
-
-        import java.util.ArrayList;
-        import java.util.Date;
-
-public class fragment_review_list extends Fragment {
-    private static final String TAG = "HomeFragment";
-    private FirebaseFirestore firebaseFirestore;
-    private HomeAdapter homeAdapter;
-    private ArrayList<PostInfo> postList;
-    private boolean updating;
-    private boolean topScrolled;
-
-    public HomeFragment() {
-        // Required empty public constructor
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-
-        View view = inflater.inflate(R.layout.fragment_home, container, false);
-
-        firebaseFirestore = FirebaseFirestore.getInstance();
-        postList = new ArrayList<>();
-        homeAdapter = new HomeAdapter(getActivity(), postList);
-        homeAdapter.setOnPostListener(onPostListener);
-
-        final RecyclerView recyclerView = view.findViewById(R.id.recyclerView);
-        view.findViewById(R.id.floatingActionButton).setOnClickListener(onClickListener);
-
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recyclerView.setAdapter(homeAdapter);
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-
-                RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
-                int firstVisibleItemPosition = ((LinearLayoutManager)layoutManager).findFirstVisibleItemPosition();
-
-                if(newState == 1 && firstVisibleItemPosition == 0){
-                    topScrolled = true;
-                }
-                if(newState == 0 && topScrolled){
-                    postsUpdate(true);
-                    topScrolled = false;
-                }
-            }
-
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy){
-                super.onScrolled(recyclerView, dx, dy);
-
-                RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
-                int visibleItemCount = layoutManager.getChildCount();
-                int totalItemCount = layoutManager.getItemCount();
-                int firstVisibleItemPosition = ((LinearLayoutManager)layoutManager).findFirstVisibleItemPosition();
-                int lastVisibleItemPosition = ((LinearLayoutManager)layoutManager).findLastVisibleItemPosition();
-
-                if(totalItemCount - 3 <= lastVisibleItemPosition && !updating){
-                    postsUpdate(false);
-                }
-
-                if(0 < firstVisibleItemPosition){
-                    topScrolled = false;
-                }
-            }
-        });
-
-        postsUpdate(false);
-
-        return view;
-    }
-
-    @Override
     public void onAttach(Context context) {
         super.onAttach(context);
     }
@@ -310,75 +174,7 @@ public class fragment_review_list extends Fragment {
     @Override
     public void onPause(){
         super.onPause();
-        homeAdapter.playerStop();
+        //homeAdapter.playerStop();
     }
 
-    View.OnClickListener onClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            switch (v.getId()) {
-                *//*
-                case R.id.logoutButton:
-                    FirebaseAuth.getInstance().signOut();
-                    myStartActivity(SignUpActivity.class);
-                    break;
-                *//*
-                case R.id.floatingActionButton:
-                    myStartActivity(WritePostActivity.class);
-                    break;
-            }
-        }
-    };
-
-    OnPostListener onPostListener = new OnPostListener() {
-        @Override
-        public void onDelete(PostInfo postInfo) {
-            postList.remove(postInfo);
-            homeAdapter.notifyDataSetChanged();
-
-            Log.e("로그: ","삭제 성공");
-        }
-
-        @Override
-        public void onModify() {
-            Log.e("로그: ","수정 성공");
-        }
-    };
-
-    private void postsUpdate(final boolean clear) {
-        updating = true;
-        Date date = postList.size() == 0 || clear ? new Date() : postList.get(postList.size() - 1).getCreatedAt();
-        CollectionReference collectionReference = firebaseFirestore.collection("posts");
-        collectionReference.orderBy("createdAt", Query.Direction.DESCENDING).whereLessThan("createdAt", date).limit(10).get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            if(clear){
-                                postList.clear();
-                            }
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                Log.d(TAG, document.getId() + " => " + document.getData());
-                                postList.add(new PostInfo(
-                                        document.getData().get("title").toString(),
-                                        (ArrayList<String>) document.getData().get("contents"),
-                                        (ArrayList<String>) document.getData().get("formats"),
-                                        document.getData().get("publisher").toString(),
-                                        new Date(document.getDate("createdAt").getTime()),
-                                        document.getId()));
-                            }
-                            homeAdapter.notifyDataSetChanged();
-                        } else {
-                            Log.d(TAG, "Error getting documents: ", task.getException());
-                        }
-                        updating = false;
-                    }
-                });
-    }
-
-
-    private void myStartActivity(Class c) {
-        Intent intent = new Intent(getActivity(), c);
-        startActivityForResult(intent, 0);
-    }
-}*/
+}

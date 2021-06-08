@@ -45,7 +45,8 @@ public class ProductAddActivity extends AppCompatActivity {
     private Button btChoose, btUpload, btCancel;
     private ImageView ivPreview;
     EditText txt_product_name, txt_product_price;
-    String uid, filename, name, price, image;
+    String uid, filename, name, priceSt, image;
+    int priceInt;
 
     HashMap<String, Object> productUpdates;
     ProductInfo productInfo;
@@ -82,6 +83,7 @@ public class ProductAddActivity extends AppCompatActivity {
         userType = sharedPreferences.getString("userType", "");
         userType_bool = Boolean.getBoolean(userType);
 
+
         //버튼 클릭 이벤트
         btChoose.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -97,15 +99,17 @@ public class ProductAddActivity extends AppCompatActivity {
         btCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Intent intent;
                 if (userType_bool) {
-                    startActivity(new Intent(getApplication(), MainActivity.class));
-                    finish();
+                    intent = new Intent(getApplication(), MainActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 }
                 else{
-                    startActivity(new Intent(getApplication(), SellerMainActivity.class));
-                    finish();
+                    intent = new Intent(getApplication(), SellerMainActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 }
+                startActivity(intent);
+                finish();
 
             }
 
@@ -114,25 +118,31 @@ public class ProductAddActivity extends AppCompatActivity {
         btUpload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!txt_product_name.getText().toString().equals("") && !txt_product_price.getText().toString().equals("")) {
+                if(!txt_product_name.getText().toString().equals("") && !txt_product_price.getText().toString().equals("")) {
                     name = txt_product_name.getText().toString().trim();
-                    price = txt_product_price.getText().toString().trim();
+                    priceSt = txt_product_price.getText().toString().trim();
+                    priceInt = Integer.parseInt(priceSt);
 
-                    if (filePath != null) {
+                    if(filePath != null) {
                         productUpdates = new HashMap<>();
 
                         //업로드할 파일이 있으면 이미지업로드
                         uploadFile();
 
                         image = filename;
-                        productInfo = new ProductInfo(name, price, image);
+                        productInfo = new ProductInfo(name, priceInt, image, uid);
                         productValue = productInfo.toMap();
 
-                        productUpdates.put("/ProductInfo/" + uid + "/" + name, productValue); //가게마다 메뉴 이름별로
+                        productUpdates.put("/ProductInfo/" + name + uid, productValue); //가게마다 메뉴 이름별로
                         mDatabase.updateChildren(productUpdates);
 
                         Toast.makeText(ProductAddActivity.this, "상품이 등록되었습니다.", Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(getApplication(), MainActivity.class));
+                        if (userType_bool) {
+                            startActivity(new Intent(getApplication(), MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                        }
+                        else{
+                            startActivity(new Intent(getApplication(), SellerMainActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                        }
                         finish();
                     } else {
                         ImageDialog(view);
@@ -145,13 +155,12 @@ public class ProductAddActivity extends AppCompatActivity {
 
     }
 
-
     //결과 처리
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         //request코드가 0이고 OK를 선택했고 data에 뭔가가 들어 있다면
-        if (requestCode == 0 && resultCode == RESULT_OK) {
+        if(requestCode == 0 && resultCode == RESULT_OK){
             filePath = data.getData();
             Log.d(TAG, "uri:" + String.valueOf(filePath));
             try {
@@ -196,12 +205,12 @@ public class ProductAddActivity extends AppCompatActivity {
                     @Override
                     public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
                         @SuppressWarnings("VisibleForTests")
-                        double progress = (100 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
+                        double progress = (100 * taskSnapshot.getBytesTransferred()) /  taskSnapshot.getTotalByteCount();
                     }
                 });
     }
 
-    public void ImageDialog(View view) {
+    public void ImageDialog (View view) {
         AlertDialog.Builder alt_bld = new AlertDialog.Builder(view.getContext());
         alt_bld.setMessage("이미지 없이 상품을 등록합니다.").setCancelable(false)
                 .setPositiveButton("네",
@@ -212,14 +221,19 @@ public class ProductAddActivity extends AppCompatActivity {
 
                                 image = "";
 
-                                productInfo = new ProductInfo(name, price, image);
+                                productInfo = new ProductInfo(name, priceInt, image, uid);
                                 productValue = productInfo.toMap();
 
-                                productUpdates.put("/ProductInfo/" + uid + "/" + name, productValue); //가게마다 메뉴 이름별로
+                                productUpdates.put("/ProductInfo/" + name + uid, productValue); //가게마다 메뉴 이름별로
                                 mDatabase.updateChildren(productUpdates);
 
                                 Toast.makeText(ProductAddActivity.this, "상품이 등록되었습니다.", Toast.LENGTH_SHORT).show();
-                                startActivity(new Intent(getApplication(), MainActivity.class));
+                                if (userType_bool) {
+                                    startActivity(new Intent(getApplication(), MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                                }
+                                else{
+                                    startActivity(new Intent(getApplication(), SellerMainActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
+                                }
                                 finish();
                             }
                         }).setNegativeButton("아니오",
@@ -248,16 +262,17 @@ public class ProductAddActivity extends AppCompatActivity {
 
     public class ProductInfo {
         private String name;
-        private String price;
+        private int price;
         private String image;
+        private String uid;
 
-        public ProductInfo() {
-        }
+        public ProductInfo(){ }
 
-        public ProductInfo(String name, String price, String image) {
+        public ProductInfo(String name ,int price, String image, String uid) {
             this.name = name;
             this.price = price;
             this.image = image;
+            this.uid = uid;
         }
 
         public Map<String, Object> toMap() {
@@ -265,6 +280,7 @@ public class ProductAddActivity extends AppCompatActivity {
             result.put("name", name);
             result.put("price", price);
             result.put("image", image);
+            result.put("uid", uid);
 
             return result;
         }
@@ -276,32 +292,13 @@ public class ProductAddActivity extends AppCompatActivity {
         super.onBackPressed();
 
         if (userType_bool) {
-            startActivity(new Intent(getApplication(), MainActivity.class));
-            finish();
+            startActivity(new Intent(getApplication(), MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+
         }
         else{
-            startActivity(new Intent(getApplication(), SellerMainActivity.class));
-            finish();
-        }
-    }
+            startActivity(new Intent(getApplication(), SellerMainActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
 
-//    //뒤로가기 시 메인페이지로 이동
-//    @Override
-//    public void onBackPressed() {
-//        super.onBackPressed();
-//
-//        Intent intent;
-//
-//        if (userType_bool) {
-//            intent = new Intent(getApplication(), MainActivity.class);
-//            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//        }
-//        else{
-//            intent = new Intent(getApplication(), SellerMainActivity.class);
-//            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//        }
-//        startActivity(intent);
-//        finish();
-//
-//    }
+        }
+        finish();
+    }
 }

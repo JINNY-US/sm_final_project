@@ -1,6 +1,7 @@
 package com.example.sm_project.fragment;
 
-import android.content.SharedPreferences;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.LayoutInflater;
@@ -17,8 +18,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
+import com.example.sm_project.ListViewItem;
+import com.example.sm_project.MainActivity;
 import com.example.sm_project.R;
+import com.example.sm_project.SellerMainActivity;
+import com.example.sm_project.ShopPopupActivity;
 import com.example.sm_project.adapter.ListViewAdapter;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -27,7 +34,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class fragment_search extends Fragment {
@@ -46,6 +52,9 @@ public class fragment_search extends Fragment {
     DatabaseReference mDatabase;
 
 
+    public static fragment_search newInstance() {
+        return new fragment_search();
+    }
 
     @Nullable
     @Override
@@ -72,11 +81,6 @@ public class fragment_search extends Fragment {
         //리스트뷰 Adapter 달기
         listview.setAdapter(mAdapter);
 
-        if(savedInstanceState != null){
-            spn_city_search.setSelection(getIndex(spn_city_search, savedInstanceState.getString("city")));
-        }
-
-
         spn_city_search.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -84,6 +88,7 @@ public class fragment_search extends Fragment {
 
                 String selItem = (String) spn_city_search.getSelectedItem();
 
+                setSpinnerItemList(selItem); //하위 지역구 array_list 결정하는 함수 호출
 
                 switch (selItem) {
                     case "서울특별시":
@@ -198,7 +203,7 @@ public class fragment_search extends Fragment {
                                 mAdapter.clear();
                                 for (int j = 0; j < townArrayList.size(); j++) {
                                     mAdapter.addItem(ContextCompat.getDrawable(container.getContext(),R.drawable.baseline_account_circle_black_24dp),
-                                            townArrayList.get(j).child("name").getValue(String.class), townArrayList.get(j).child("intro").getValue(String.class));
+                                            townArrayList.get(j).child("name").getValue(String.class), townArrayList.get(j).child("intro").getValue(String.class), townArrayList.get(j).child("uid").getValue(String.class));
                                 }
                                 mAdapter.notifyDataSetChanged();
                             } else {
@@ -232,8 +237,8 @@ public class fragment_search extends Fragment {
                                     mAdapter.clear();
                                     for (int i = 0; i < searchArrayList.size(); i++) {
                                         // 아이템 추가
-                                          mAdapter.addItem(ContextCompat.getDrawable(container.getContext(), R.drawable.baseline_account_circle_black_24dp),
-                                               searchArrayList.get(i).child("name").getValue(String.class), searchArrayList.get(i).child("intro").getValue(String.class));
+                                        mAdapter.addItem(ContextCompat.getDrawable(container.getContext(), R.drawable.baseline_account_circle_black_24dp),
+                                                searchArrayList.get(i).child("name").getValue(String.class), searchArrayList.get(i).child("intro").getValue(String.class), searchArrayList.get(i).child("uid").getValue(String.class));
                                     }
                                     mAdapter.notifyDataSetChanged();
                                     Toast.makeText(container.getContext(), "검색되었습니다.", Toast.LENGTH_SHORT).show();
@@ -257,22 +262,43 @@ public class fragment_search extends Fragment {
             }
         });
 
+        //listview 클릭 이벤트 핸들러 정의
+        listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                //get item
+                ListViewItem item = (ListViewItem) adapterView.getItemAtPosition(i);
+                String uidStr = item.getUid();
+
+                Intent intent = new Intent(getContext(), ShopPopupActivity.class);
+                intent.putExtra("uidStr", uidStr);
+                startActivityForResult(intent,1);
+
+
+//                ListViewItem item = (ListViewItem) adapterView.getItemAtPosition(i);
+//
+//                String uidStr = item.getUid();
+//                fragment_seller_product_list fragment_seller_product_list = new fragment_seller_product_list();
+//                fragment_shop_description fragment_shop_description = new fragment_shop_description();
+//
+//                Bundle bundle = new Bundle();
+//                bundle.putString("uid", uidStr);
+//                fragment_shop_description.setArguments(bundle);
+//                fragment_seller_product_list.setArguments(bundle);
+//
+//                //((MainActivity)getActivity()).switchFragment();
+//
+//                ((MainActivity)getActivity()).replaceFragment(fragment_shop_description.newInstance());
+            }
+        });
 
         return v;
     }
 
-    private int getIndex(Spinner spinner, String item) {
-        for (int i = 0; i < spinner.getCount(); i++) {
-            if (spinner.getItemAtPosition(i).toString().equalsIgnoreCase(item)) {
-                return i;
-            }
-        }
-        return 0;
+
+    private void setSpinnerItemList(String selItem) {
+
     }
-
-
-
-
 
     public class getStoreInfo {
         public getStoreInfo(String key, String val) {

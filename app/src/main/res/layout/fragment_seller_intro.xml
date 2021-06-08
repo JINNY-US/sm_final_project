@@ -17,17 +17,22 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <ImageView
-                android:id="@+id/imageView4"
+            <TextView
+                android:id="@+id/textView27"
                 android:layout_width="match_parent"
-                android:layout_height="187dp"
-                android:src="@android:drawable/ic_menu_gallery" />
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:gravity="center"
+                android:text="현재 설정 상태"
+                android:textColor="@color/dark_orange"
+                android:textSize="30sp" />
 
             <TextView
                 android:id="@+id/textView6"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
+                android:layout_marginTop="20dp"
                 android:text="상호명"
                 android:textColor="@color/main_orange"
                 android:textSize="30sp" />
@@ -39,7 +44,28 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:layout_marginBottom="35dp"
-                android:text="(sample) 한솥 도시락 천안상명대점"
+                android:text="(가게 이름 표시)"
+                android:textColor="@color/black"
+                android:textSize="24sp" />
+
+            <TextView
+                android:id="@+id/textView35"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:text="한줄 소개"
+                android:textColor="@color/main_orange"
+                android:textSize="30sp" />
+
+            <TextView
+                android:id="@+id/shop_intro3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginBottom="35dp"
+                android:text="(한줄 소개 표시)"
+                android:textColor="@color/black"
                 android:textSize="24sp" />
 
             <TextView
@@ -73,6 +99,7 @@
                     android:layout_marginRight="10dp"
                     android:layout_marginBottom="35dp"
                     android:layout_weight="1"
+                    android:textColor="@color/black"
                     android:textSize="24sp" />
 
             </LinearLayout>
@@ -101,6 +128,7 @@
                     android:layout_marginRight="10dp"
                     android:layout_marginBottom="35dp"
                     android:layout_weight="1"
+                    android:textColor="@color/black"
                     android:textSize="24sp" />
             </LinearLayout>
 
@@ -120,7 +148,8 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:layout_marginBottom="35dp"
-                android:text="(sample) 동남구 상명대길 27 영일빌딩 1층"
+                android:text="(상세주소 표시) "
+                android:textColor="@color/black"
                 android:textSize="24sp" />
 
             <TextView
@@ -133,13 +162,54 @@
                 android:textSize="30sp" />
 
             <TextView
+                android:id="@+id/shop_intro2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginBottom="35dp"
+                android:text="(한줄 소개 표시)"
+                android:textColor="@color/black"
+                android:textSize="24sp" />
+
+            <TextView
+                android:id="@+id/textView29"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:text="한줄 소개"
+                android:textColor="@color/main_orange"
+                android:textSize="30sp" />
+
+            <TextView
                 android:id="@+id/shop_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:layout_marginBottom="35dp"
-                android:text="(sample) 매일 09:00 - 21:00 연중무휴"
+                android:text="(영업 시간 표시)"
+                android:textColor="@color/black"
+                android:textSize="24sp" />
+
+            <TextView
+                android:id="@+id/textView28"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:text="한줄 소개"
+                android:textColor="@color/main_orange"
+                android:textSize="30sp" />
+
+            <TextView
+                android:id="@+id/shop_intro"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginBottom="35dp"
+                android:text="(한줄 소개 표시)"
+                android:textColor="@color/black"
                 android:textSize="24sp" />
 
 

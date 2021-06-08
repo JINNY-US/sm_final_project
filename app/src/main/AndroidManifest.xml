@@ -7,138 +7,113 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
-
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/ic_launcher_foreground"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/ic_launcher_foreground"
         android:supportsRtl="true"
         android:theme="@style/Theme.Sm_project">
 
-        <!-- 판매자 -->
+        <!-- 광고임!!!!!!!!!!!!! -->
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-4117375013439833~5937823748"/>
 
-<!--        메뉴추가 페이지-->
-        <activity
-            android:name=".ProductAddActivity"
-            android:label="메뉴추가"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+        <activity android:name="com.google.android.gms.ads.AdActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:theme="@android:style/Theme.Translucent" />
 
-        </activity>
-
-<!--        업주 메인 화면-->
-        <activity android:name=".SellerMainActivity"
-            android:label="업주 메인"
-            android:theme="@style/NoActionBar">
-            <!--<intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>-->
-        </activity>
-
-<!--        가게 설정 변경 페이지-->
-        <activity
-            android:name=".SellerSettingActivity"
-            android:label="가게 설정 변경"
+        <activity android:name=".ThanksActivity"
             android:theme="@style/MainTheme">
         </activity>
 
+        <!-- 판매자 -->
+        <!-- 메뉴추가 페이지 -->
+        <activity
+            android:name=".ProductAddActivity"
+            android:label="메뉴추가"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity> <!-- 업주 메인 화면 -->
+        <activity
+            android:name=".SellerMainActivity"
+            android:label="업주 메인"
+            android:theme="@style/NoActionBar">
 
-        <!-- 일반 사용자 -->
+            <!--
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
-        <!-- 유저 메인 화면-->
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            -->
+        </activity> <!-- 가게 설정 변경 페이지 -->
+        <activity
+            android:name=".SellerSettingActivity"
+            android:label="가게 설정 변경"
+            android:theme="@style/MainTheme"></activity> <!-- 일반 사용자 -->
+        <!-- 유저 메인 화면 -->
         <activity
             android:name=".MainActivity"
-            android:theme="@style/NoActionBar" >
-        </activity>
-
-
-        <activity android:name=".LikepageActivity"
-            android:theme="@style/NoActionBar">
-        </activity>
-
-
-
-        <!--<intent-filter>
+            android:theme="@style/NoActionBar"></activity>
+        <activity
+            android:name=".LikepageActivity"
+            android:theme="@style/NoActionBar"></activity>
+        <!--
+<intent-filter>
             <action android:name="android.intent.action.MAIN" />
 
             <category android:name="android.intent.category.LAUNCHER" />
-        </intent-filter>-->
-
-
-
+        </intent-filter>
+        -->
         <!-- 공용, ?? -->
-
-<!--        개임 설정 화면-->
+        <!-- 개임 설정 화면 -->
         <activity
             android:name=".SettingActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-
-
-        <!--        각종 설정 화면-->
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" /> <!-- 각종 설정 화면 -->
         <activity
             android:name=".MypageActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
-        </activity>
-
-        <!--        검색 비용, 지역구 설정-->
-        <activity android:name=".CostSettingActivity"
-            android:theme="@style/NoActionBar">
-        </activity>
-
-        <!--        태그 추가(셀러 설정)-->
-        <activity android:name=".TagAddActivity"
-            android:theme="@style/NoActionBar">
-        </activity>
-
-        <!--        리뷰 검색-->
-
-        <activity android:name=".activity.GalleryActivity"
-            android:theme="@style/NoActionBar">
-        </activity>
-
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity> <!-- 검색 비용, 지역구 설정 -->
+        <activity
+            android:name=".CostSettingActivity"
+            android:theme="@style/NoActionBar"></activity> <!-- 태그 추가(셀러 설정) -->
+        <activity
+            android:name=".TagAddActivity"
+            android:theme="@style/NoActionBar"></activity> <!-- 리뷰 검색 -->
+        <activity
+            android:name=".activity.GalleryActivity"
+            android:theme="@style/NoActionBar"></activity>
         <activity
             android:name=".RequestActivity"
-            android:theme="@style/NoActionBar"/>
+            android:theme="@style/NoActionBar" />
+        <activity
+            android:name=".activity.PostActivity"
+            android:theme="@style/NoActionBar"></activity>
+        <activity
+            android:name=".activity.MemberInitActivity"
+            android:theme="@style/NoActionBar"></activity> <!-- 검색 결과를 누르면 상세 설명 팝업 -->
+        <activity
+            android:name=".ShopPopupActivity"
+            android:theme="@android:style/Theme.Dialog" />
 
-        <activity android:name=".activity.PostActivity"
-            android:theme="@style/NoActionBar">
-        </activity>
-
-
-        <activity android:name=".activity.MemberInitActivity"
-            android:theme="@style/NoActionBar">
-        </activity>
-
-
-        <activity android:name=".activity.CameraActivity"
-            android:theme="@style/NoActionBar">
-        </activity>
-
-        <!--        리뷰 작성 화면-->
-        <activity android:name=".activity.WritePostActivity"
-            android:theme="@style/NoActionBar">
-        </activity>
-
-        <!--        비밀번호 찾기 화면-->
+        <activity android:name=".CostSetPopupActivity"
+            android:theme="@android:style/Theme.Dialog"></activity>
+        <activity
+            android:name=".activity.CameraActivity"
+            android:theme="@style/NoActionBar"></activity> <!-- 리뷰 작성 화면 -->
+        <activity
+            android:name=".activity.WritePostActivity"
+            android:theme="@style/NoActionBar"></activity> <!-- 비밀번호 찾기 화면 -->
         <activity
             android:name=".FindActivity"
-            android:theme="@style/MainTheme" />
-
-        <!--        가입화면-->
+            android:theme="@style/MainTheme" /> <!-- 가입화면 -->
         <activity
             android:name=".JoinActivity"
-            android:theme="@style/MainTheme" />
-
-        <!--        로그인 화면-->
+            android:theme="@style/MainTheme" /> <!-- 로그인 화면 -->
         <activity
             android:name=".LoginActivity"
-            android:theme="@style/MainTheme" />
-
-
-        <!--스플레쉬 화면 -->
+            android:theme="@style/MainTheme" /> <!-- 스플레쉬 화면 -->
         <activity
             android:name=".SplashActivity"
             android:theme="@style/SplashTheme">
@@ -149,4 +124,5 @@
             </intent-filter>
         </activity>
     </application>
+
 </manifest>

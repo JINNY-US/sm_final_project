@@ -1,28 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@android:color/white">
-
-    <TextView
-        android:id="@+id/tv_frag1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="리뷰 리스트 프레그먼트"
-        android:textSize="40sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-
-
-
-</androidx.constraintlayout.widget.ConstraintLayout>-->
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
@@ -30,13 +6,11 @@
     android:layout_height="match_parent"
     tools:context=".fragment.fragment_review_list">
 
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/RecyclerView_review"
+    <ListView
+        android:id="@+id/ListView_review"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
-    </androidx.recyclerview.widget.RecyclerView>
+    </ListView>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/ActionButton_review"
@@ -49,15 +23,4 @@
         android:clickable="true"
         android:src="@drawable/ic_add_black_24dp" />
 
-    <!--<TextView
-        android:id="@+id/tv_frag1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-@@ -16,6 +32,8 @@
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />-->
-
 </RelativeLayout>
-

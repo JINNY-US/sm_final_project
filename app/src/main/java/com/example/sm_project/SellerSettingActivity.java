@@ -1,13 +1,19 @@
 package com.example.sm_project;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -34,13 +40,13 @@ public class SellerSettingActivity extends AppCompatActivity {
     ArrayAdapter<CharSequence> stspin, adspin1, adspin2;
     CardView cardView_tag;
     EditText txt_name, txt_intro, txt_addr, txt_time;
-    String town, uid, name_, email, password, init_set, usertype, tag;
-    Button button_first;
-    TextView txt_tag_num, txt_init_set;
+    String town, uid, name_, email, password, init_set, usertype, tag_string;
+    Button btn_sellersetting_save;
+    TextView txt_tag_num;
     int tag_num;
-    String init_set_string;
-    Boolean init_set_bool;
     String SP_name, SP_addr, SP_intro, SP_time, SP_type, SP_city, SP_town;
+    Boolean i = true;
+    String[] num_array;
 
 
     private FirebaseAuth firebaseAuth;
@@ -49,8 +55,6 @@ public class SellerSettingActivity extends AppCompatActivity {
     FirebaseUser user;
 
     SharedPreferences.Editor editor;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,22 +65,11 @@ public class SellerSettingActivity extends AppCompatActivity {
         Intent intent = getIntent();
 
         tag_num = intent.getIntExtra("int_position_size", 0);
-        tag = intent.getStringExtra("position_nums");
+        tag_string = intent.getStringExtra("position_nums");
+        i = intent.getBooleanExtra("i_bool", true);
 
         SharedPreferences sharedPreferences = getSharedPreferences("sFile", MODE_PRIVATE);
         editor = sharedPreferences.edit();
-
-
-        //객체 초기화
-        txt_init_set = findViewById(R.id.txt_init_set);
-
-        //최초 셋팅일 경우 안내문자가 보이도록 설정
-      /*  if (userType) {
-            txt_init_set.setVisibility(View.GONE);
-        } else {
-            txt_init_set.setVisibility(View.VISIBLE);
-        } */
-
 
         spinner_city = findViewById(R.id.spinner_city);
         spinner_town = findViewById(R.id.spinner_town);
@@ -99,29 +92,58 @@ public class SellerSettingActivity extends AppCompatActivity {
         txt_addr = findViewById(R.id.txt_shop_addr);
         txt_time = findViewById(R.id.txt_shop_time);
         txt_intro = findViewById(R.id.txt_shop_intro);
-        button_first = findViewById(R.id.button_first);
+        btn_sellersetting_save = findViewById(R.id.button_sellersetting_save);
 
         firebaseAuth = FirebaseAuth.getInstance();
         user = firebaseAuth.getCurrentUser(); //로그인한 유저의 정보 가져오기
 
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+
         uid = user.getUid();
 
-        //SharedPreferences sf = getSharedPreferences("sFile", MODE_PRIVATE);
 
-        //text라는 key에 저장된 값이 있는지 확인. 아무값도 들어있지 않으면 ""를 반환
-        String name = sharedPreferences.getString("name_key", "");
-        String addr = sharedPreferences.getString("addr_key", "");
-        String intro = sharedPreferences.getString("intro_key", "");
-        String time = sharedPreferences.getString("time_key", "");
-        String type = sharedPreferences.getString("type_key", "");
-        String city = sharedPreferences.getString("city_key", "");
-        town = sharedPreferences.getString("town_key", "");
-        txt_name.setText(name);
-        txt_intro.setText(intro);
-        txt_addr.setText(addr);
-        txt_time.setText(time);
-        spinner_store.setSelection(getIndex(spinner_store, type));
-        spinner_city.setSelection(getIndex(spinner_city, city));
+        //데이터베이스에 있는 기종 값 가져오기
+        if(i) {
+            mDatabase.child("StoreInfo").child(uid).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if (uid != null) {
+                        txt_name.setText(snapshot.child("name").getValue(String.class));
+                        txt_intro.setText(snapshot.child("intro").getValue(String.class));
+                        txt_addr.setText(snapshot.child("addr").getValue(String.class));
+                        txt_time.setText(snapshot.child("time").getValue(String.class));
+                        spinner_store.setSelection(getIndex(spinner_store, snapshot.child("type_string").getValue(String.class)));
+                        spinner_city.setSelection(getIndex(spinner_city, snapshot.child("city_string").getValue(String.class)));
+                        town = snapshot.child("town_string").getValue(String.class);
+                        tag_string = snapshot.child("tag").getValue(String.class);
+                        TagNumSet(tag_string);
+                        i = false;
+                    } else {
+                        Toast.makeText(SellerSettingActivity.this, "회원정보를 불러올수가 없습니다.", Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                }
+            });
+        }else{
+            //태그 페이지 방문후 돌아오면 디비의 내용이 아니라 작성중이던 내용 받아오기
+            //text라는 key에 저장된 값이 있는지 확인. 아무값도 들어있지 않으면 ""를 반환
+            String name = sharedPreferences.getString("name_key", "");
+            String addr = sharedPreferences.getString("addr_key", "");
+            String intro = sharedPreferences.getString("intro_key", "");
+            String time = sharedPreferences.getString("time_key", "");
+            String type = sharedPreferences.getString("type_key", "");
+            String city = sharedPreferences.getString("city_key", "");
+            town = sharedPreferences.getString("town_key", "");
+            txt_name.setText(name);
+            txt_intro.setText(intro);
+            txt_addr.setText(addr);
+            txt_time.setText(time);
+            spinner_store.setSelection(getIndex(spinner_store, type));
+            spinner_city.setSelection(getIndex(spinner_city, city));
+        }
 
 
         spinner_city.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -138,7 +160,6 @@ public class SellerSettingActivity extends AppCompatActivity {
             }
         });
 
-        mDatabase = FirebaseDatabase.getInstance().getReference();
         mDatabase.child("Users").child(uid).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -157,7 +178,7 @@ public class SellerSettingActivity extends AppCompatActivity {
             }
         });
 
-        button_first.setOnClickListener(new View.OnClickListener() {
+        btn_sellersetting_save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (!txt_name.getText().toString().equals("") && !txt_addr.getText().toString().equals("") && !spinner_store.getSelectedItem().toString().equals("") && !spinner_city.getSelectedItem().toString().equals("") && !spinner_town.getSelectedItem().toString().equals("")) {
@@ -172,6 +193,7 @@ public class SellerSettingActivity extends AppCompatActivity {
                     String addr = txt_addr.getText().toString().trim();
                     String time = "";
                     String intro = "";
+                    String tag = tag_string;
 
                     init_set = "true";
 
@@ -182,6 +204,8 @@ public class SellerSettingActivity extends AppCompatActivity {
                     if (!txt_intro.getText().toString().equals("")) {
                         intro = txt_intro.getText().toString().trim();
                     }
+
+
 
                     HashMap<String, Object> storeUpdates = new HashMap<>();
                     HashMap<String, Object> userInitUpdates = new HashMap<>();
@@ -200,7 +224,7 @@ public class SellerSettingActivity extends AppCompatActivity {
                     SharedPre_remove();
 
                     Toast.makeText(SellerSettingActivity.this, "저장되었습니다.", Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(SellerSettingActivity.this, MainActivity.class));
+                    startActivity(new Intent(SellerSettingActivity.this, SellerMainActivity.class));
                     finish();
                 } else {
                     Toast.makeText(SellerSettingActivity.this, "작성하지 않은 항목이 있습니다.", Toast.LENGTH_SHORT).show();
@@ -213,12 +237,23 @@ public class SellerSettingActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplication(), TagAddActivity.class);
-                intent.putExtra("position_nums", tag);
+                intent.putExtra("position_nums", tag_string);
+                intent.putExtra("i_bool", i);
                 startActivity(intent);
                 finish();
             }
         });
 
+    }
+
+    private void TagNumSet(String tag_string) {
+        if (tag_string != null) {
+            num_array = tag_string.split(",");
+            for (int i = 0; i < num_array.length; i++) {
+                int a = Integer.parseInt(num_array[i]);
+            }
+            txt_tag_num.setText("현재 " + num_array.length + "개 선택됨");
+        }
     }
 
     private void SharedPre_remove() {
@@ -467,4 +502,44 @@ public class SellerSettingActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onBackPressed() {
+       // super.onBackPressed();
+        Back();
+    }
+
+    public void Back() {
+        AlertDialog.Builder alt_bld = new AlertDialog.Builder(this);
+        alt_bld.setMessage("이전 화면으로 돌아갈 경우 변경 사항이 저장되지 않습니다. 돌아가시겠습니까?").setCancelable(false)
+                .setPositiveButton("네",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                Intent intent = new Intent(getApplicationContext(), MypageActivity.class);
+                                startActivity(intent);
+                                finish();
+                            }
+                        }).setNegativeButton("아니오",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.cancel();
+                    }
+                });
+        AlertDialog alert = alt_bld.create();
+
+        //대화창 클릭 시 뒷 배경 어두워지는 것 막기
+        alert.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+
+        //대화창 제목 설정
+        alert.setTitle("Notice");
+
+        //대화창 아이콘 설정
+        alert.setIcon(R.drawable.exclamation);
+
+        //대화창 배경 색 설정
+        alert.getWindow().setBackgroundDrawable(new ColorDrawable(Color.rgb(180, 180, 180)));
+        alert.show();
+
+    }
 }

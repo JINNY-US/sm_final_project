@@ -16,11 +16,13 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONArray;
+
 import java.util.ArrayList;
 
 public class CostSettingActivity extends AppCompatActivity {
     Spinner spinner, spn_rest, spn_shop, spn_cafe, spn_bar, spn_etc; // 가격 설정 스피너
-    Spinner spn_set_city, spn_set_town; //지역 설절 스피너
+    Spinner spn_set_city, spn_set_town; //지역 설정 스피너
     Button cost_save_btn;
     TextView txt_rest, txt_shop, txt_cafe, txt_bar, txt_etc;
     EditText Total_cost;
@@ -223,9 +225,11 @@ public class CostSettingActivity extends AppCompatActivity {
                 //userType을 받아와서 type에 맞게 메인화면 불러오기
                 if (userType_bool) {
                     intent = new Intent(getApplication(), MainActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 }
                 else{
                     intent = new Intent(getApplication(), SellerMainActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 }
 
 
@@ -274,22 +278,42 @@ public class CostSettingActivity extends AppCompatActivity {
 
                 }
 
-                //int형 배열 CostArr에 각 항목별 금액 추가
-                CostArr.add(0, cost_rest);
-                CostArr.add(1, cost_shop);
-                CostArr.add(2, cost_cafe);
-                CostArr.add(3, cost_bar);
-                CostArr.add(4, cost_etc);
+//                //int형 배열 CostArr에 각 항목별 금액 추가
+//                CostArr.add(0, cost_rest);
+//                CostArr.add(1, cost_shop);
+//                CostArr.add(2, cost_cafe);
+//                CostArr.add(3, cost_bar);
+//                CostArr.add(4, cost_etc);
 
-                //intent로 전송
-                intent.putIntegerArrayListExtra("CostArr", CostArr);
+//                JSONArray a = new JSONArray();
+//
+//                a.put(cost_rest);
+//                a.put(cost_shop);
+//                a.put(cost_cafe);
+//                a.put(cost_bar);
+//                a.put(cost_etc);
+//
+//                editor.putString("array_cost", a.toString());
 
-                //String형 배열 LocationArr에 설정 지역구 추가
-                LocationArr.add(0, set_city);
-                LocationArr.add(1, set_town);
+                editor.putInt("total_cost", t_cost);
+                editor.putInt("cost_rest", cost_rest);
+                editor.putInt("cost_shop", cost_shop);
+                editor.putInt("cost_cafe", cost_cafe);
+                editor.putInt("cost_bar", cost_bar);
+                editor.putInt("cost_etc", cost_etc);
+                editor.putString("set_city", set_city);
+                editor.putString("set_town", set_town);
+                editor.apply();
 
-                //intent로 전송
-                intent.putStringArrayListExtra("LocationArr", LocationArr);
+//                //intent로 전송
+//                intent.putIntegerArrayListExtra("CostArr", CostArr);
+//
+//                //String형 배열 LocationArr에 설정 지역구 추가
+//                LocationArr.add(0, set_city);
+//                LocationArr.add(1, set_town);
+//
+//                //intent로 전송
+//                intent.putStringArrayListExtra("LocationArr", LocationArr);
 
                 startActivity(intent);
                 finish();

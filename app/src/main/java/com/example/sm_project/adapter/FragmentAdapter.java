@@ -35,7 +35,4 @@ public class FragmentAdapter extends FragmentPagerAdapter {
         return fragmentList.size();
     }
 
-    public Parcelable saveState() {
-        return saveState();
-    }
 }

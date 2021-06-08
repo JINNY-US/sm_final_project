@@ -1,14 +1,19 @@
 package com.example.sm_project;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -40,9 +45,7 @@ public class SettingActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-        startActivity(new Intent(getApplication(), MypageActivity.class));
-        finish();
+        Back();
     }
 
     @Override
@@ -54,7 +57,7 @@ public class SettingActivity extends AppCompatActivity {
         setting_cancle_btn = findViewById(R.id.setting_cancel_btn);
         setting_change_btn = findViewById(R.id.setting_change_btn);
         setting_id_before = findViewById(R.id.setting_email);
-        editTextTextPersonName4 = findViewById(R.id.setting_name);
+            editTextTextPersonName4 = findViewById(R.id.setting_name);
         setting_pass = findViewById(R.id.setting_pass);
         setting_pass_check = findViewById(R.id.setting_pass_check);
 
@@ -82,8 +85,7 @@ public class SettingActivity extends AppCompatActivity {
         setting_cancle_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getApplication(), MypageActivity.class));
-                finish();
+                Back();
             }
         });
 
@@ -158,5 +160,42 @@ public class SettingActivity extends AppCompatActivity {
 
 
     }
+
+    public void Back() {
+        AlertDialog.Builder alt_bld = new AlertDialog.Builder(this);
+        alt_bld.setMessage("이전 화면으로 돌아갈 경우 변경 사항이 저장되지 않습니다. 돌아가시겠습니까?").setCancelable(false)
+                .setPositiveButton("네",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                Intent intent = new Intent(getApplicationContext(), MypageActivity.class);
+                                startActivity(intent);
+                                finish();
+                            }
+                        }).setNegativeButton("아니오",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.cancel();
+                    }
+                });
+        AlertDialog alert = alt_bld.create();
+
+        //대화창 클릭 시 뒷 배경 어두워지는 것 막기
+        alert.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+
+        //대화창 제목 설정
+        alert.setTitle("Notice");
+
+        //대화창 아이콘 설정
+        alert.setIcon(R.drawable.exclamation);
+
+        //대화창 배경 색 설정
+        alert.getWindow().setBackgroundDrawable(new ColorDrawable(Color.rgb(180, 180, 180)));
+        alert.show();
+
+    }
+
+
 
 }
