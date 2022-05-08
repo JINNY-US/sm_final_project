@@ -35,7 +35,7 @@
         <activity
             android:name=".ProductAddActivity"
             android:label="메뉴추가"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity> <!-- 업주 메인 화면 -->
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" /> <!-- 업주 메인 화면 -->
         <activity
             android:name=".SellerMainActivity"
             android:label="업주 메인"
